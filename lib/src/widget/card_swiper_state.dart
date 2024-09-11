@@ -175,6 +175,10 @@ class _CardSwiperState<T extends Widget> extends State<CardSwiper>
       switch (_swipeType) {
         case SwipeType.swipe:
           await _handleCompleteSwipe();
+        case SwipeType.back:
+          if (triedToSwipe) {
+            widget.onTrySwipe?.call(_currentIndex!, _detectedDirection);
+          }
         default:
           break;
       }
@@ -211,14 +215,18 @@ class _CardSwiperState<T extends Widget> extends State<CardSwiper>
     });
   }
 
+  bool triedToSwipe = false;
+
   void _onEndAnimation() {
     final direction = _getEndAnimationDirection();
     final isValidDirection = _isValidDirection(direction);
 
+    triedToSwipe = direction != CardSwiperDirection.none && !isValidDirection;
+
     if (isValidDirection) {
       _swipe(direction);
     } else {
-      _goBack();
+      _goBack(direction);
     }
   }
 
@@ -253,8 +261,9 @@ class _CardSwiperState<T extends Widget> extends State<CardSwiper>
     _cardAnimation.animate(context, direction);
   }
 
-  void _goBack() {
+  void _goBack(CardSwiperDirection direction) {
     _swipeType = SwipeType.back;
+    _detectedDirection = direction;
     _cardAnimation.animateBack(context);
   }
 

@@ -46,7 +46,11 @@ class _ExamplePageState extends State<Example> {
                 onUndo: _onUndo,
                 numberOfCardsDisplayed: 3,
                 backCardOffset: const Offset(40, 40),
+                onTrySwipe: (currentIndex, direction) {
+                  print("onTrySwipe: $currentIndex, $direction");
+                },
                 padding: const EdgeInsets.all(24.0),
+                allowedSwipeDirection: AllowedSwipeDirection.only(left: true),
                 cardBuilder: (
                   context,
                   index,
